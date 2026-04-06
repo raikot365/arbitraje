@@ -75,11 +75,11 @@ class ArbitrageBotGUI(ctk.CTk):
     def setup_sidebar(self):
         self.sidebar = ctk.CTkFrame(self, width=320, corner_radius=0); self.sidebar.grid(row=0, column=0, sticky="nsew")
         ctk.CTkLabel(self.sidebar, text="CONFIGURACIÓN", font=ctk.CTkFont(size=18, weight="bold")).pack(pady=15)
-        self.threshold_entry = self.create_input_with_presets("Umbral de Alerta (%)", "1.0", [("1%", 1.0), ("2%", 2.0), ("3%", 3.0)])
-        self.interval_entry = self.create_input_with_presets("Intervalo Consulta (seg)", "30", [("30s", 30), ("1m", 60)])
-        self.cooldown_entry = self.create_input_with_presets("Cooldown Alertas (seg)", "300", [("5m", 300), ("15m", 900)])
+        self.threshold_entry = self.create_input_with_presets("Umbral de Alerta (%)", "1.0", [("1%", 1.0), ("2%", 2.0), ("3%", 3.0), ("5%", 5.0)])
+        self.interval_entry = self.create_input_with_presets("Intervalo Consulta (seg)", "30", [("30s", 30), ("1m", 60), ("5m", 300), ("10m", 600)])
+        self.cooldown_entry = self.create_input_with_presets("Cooldown Alertas (seg)", "300", [("5m", 300), ("10m", 600), ("15m", 900), ("30m", 1800)])
         
-        ctk.CTkLabel(self.sidebar, text="TASA RENDIMIENTO (24H)", font=ctk.CTkFont(size=13, weight="bold"), text_color="#3BD0C9").pack(pady=(10, 5))
+        ctk.CTkLabel(self.sidebar, text="TASA COSTO OPORTUNIDAD", font=ctk.CTkFont(size=13, weight="bold"), text_color="#3BD0C9").pack(pady=(10, 5))
         self.tasa_selector = ctk.CTkOptionMenu(self.sidebar, values=list(self.tasas_disponibles.keys()), fg_color="#333", button_color="#444")
         self.tasa_selector.set("Ninguna (0%)")
         self.tasa_selector.pack(pady=5, padx=20, fill="x")
@@ -162,7 +162,8 @@ class ArbitrageBotGUI(ctk.CTk):
         def get_one(eid):
             try:
                 r = requests.get(f"https://criptoya.com/api/{eid}/usdt/ars/0.1", timeout=10).json()
-                return self.cripto_exchanges.get(eid, eid.capitalize()), float(r["totalAsk"]), float(r["totalBid"])
+                name = self.cripto_exchanges.get(eid, eid.capitalize())
+                return name, float(r["totalAsk"]), float(r["totalBid"])
             except: return None, None, None
         with ThreadPoolExecutor(max_workers=8) as exe:
             futures = [exe.submit(get_one, i) for i in active_ids]
@@ -185,8 +186,8 @@ class ArbitrageBotGUI(ctk.CTk):
         if not self.is_running: 
             self.status_label.configure(text="Bot detenido.")
             return
-        restante = int(max(0, self.proxima_actualizacion - time.time()))
-        self.status_label.configure(text=f"Próxima actualización en: {restante}s")
+        restance = int(max(0, self.proxima_actualizacion - time.time()))
+        self.status_label.configure(text=f"Próxima actualización en: {restance}s")
         self.after(1000, self.update_countdown_ui)
 
     def main_loop(self):
@@ -202,7 +203,9 @@ class ArbitrageBotGUI(ctk.CTk):
                 for cat in self.containers: self.after(0, lambda c=cat: self.clear_container(c))
 
                 with ThreadPoolExecutor(max_workers=5) as exe:
-                    p_usdt, p_oficial, p_mep = exe.submit(self.fetch_usdt_criptoya, [k for k in keys if not k.startswith("oficial_")]).result(), exe.submit(self.fetch_oficial_api, [k for k in keys if k.startswith("oficial_")]).result(), exe.submit(self.fetch_mep_full).result()
+                    p_usdt = exe.submit(self.fetch_usdt_criptoya, [k for k in keys if not k.startswith("oficial_")]).result()
+                    p_oficial = exe.submit(self.fetch_oficial_api, [k for k in keys if k.startswith("oficial_")]).result()
+                    p_mep = exe.submit(self.fetch_mep_full).result()
 
                 self.analyze_standard(p_usdt, threshold, "USDT")
                 self.analyze_standard(p_oficial, threshold, "OFICIAL")
@@ -244,15 +247,18 @@ class ArbitrageBotGUI(ctk.CTk):
         if not p_oficial or not p_mep: return
         dest = {"bid": p_mep["ci"], "mep_24": p_mep["24hs"]}
         best = min(p_oficial, key=lambda x: p_oficial[x]["ask"])
-        s_ci = (dest["bid"] - p_oficial[best]["ask"]) / p_oficial[best]["ask"] * 100
-        s_24 = (((dest["mep_24"] - p_oficial[best]["ask"]) / p_oficial[best]["ask"]) + y_diario) * 100
+        price_best = p_oficial[best]["ask"]
+        s_ci = (dest["bid"] - price_best) / price_best * 100
+        s_24 = (((dest["mep_24"] - price_best) / price_best) - y_diario) * 100
         self.render_card(self.containers["OFICIAL_MEP"], best, "Dolar MEP (M)", p_oficial[best], dest, {"ci": s_ci, "24h": s_24}, "OFICIAL_MEP", True)
+        
         for name, p in p_oficial.items():
             g_ci = (dest["bid"] - p["ask"]) / p["ask"] * 100
-            if g_ci >= threshold:
-                g_24 = (((dest["mep_24"] - p["ask"]) / p["ask"]) + y_diario) * 100
+            g_24 = (((dest["mep_24"] - p["ask"]) / p["ask"]) - y_diario) * 100
+            # CORRECCIÓN: Alerta si CI o 24hs superan el umbral
+            if g_ci >= threshold or g_24 >= threshold:
                 self.render_card(self.containers["OFICIAL_MEP"], name, "Dolar MEP (M)", p, dest, {"ci": g_ci, "24h": g_24}, "OFICIAL_MEP")
-                self.process_telegram("OFICIAL_MEP", name, "MEP", p["ask"], dest["bid"], g_ci)
+                self.process_telegram("OFICIAL_MEP", name, "MEP", p["ask"], dest["bid"], max(g_ci, g_24))
 
     def analyze_cross(self, p_oficial, p_usdt, bridge, threshold, cat):
         if not p_oficial or not p_usdt: return
@@ -278,17 +284,17 @@ class ArbitrageBotGUI(ctk.CTk):
         best = min(p_usdt, key=lambda x: p_usdt[x]["ask"])
         costo_b = p_usdt[best]["ask"] / bridge["bid"]
         s_ci = (dest["bid"] - costo_b) / costo_b * 100
-        s_24 = (((dest["mep_24"] - costo_b) / costo_b) + y_diario) * 100
+        s_24 = (((dest["mep_24"] - costo_b) / costo_b) - y_diario) * 100
         item_b = {"ask": costo_b, "raw_price": p_usdt[best]["ask"], "bridge_name": bridge["name"], "parity": bridge["bid"]}
         self.render_card(self.containers["USDT_MEP"], f"{best} (U)", "Dolar MEP (M)", item_b, dest, {"ci": s_ci, "24h": s_24}, "USDT_MEP", True)
         for name, p in p_usdt.items():
             costo = p["ask"] / bridge["bid"]
             g_ci = (dest["bid"] - costo) / costo * 100
-            if g_ci >= threshold:
-                g_24 = (((dest["mep_24"] - costo) / costo) + y_diario) * 100
+            g_24 = (((dest["mep_24"] - costo) / costo) - y_diario) * 100
+            if g_ci >= threshold or g_24 >= threshold:
                 item_s = {"ask": costo, "raw_price": p["ask"], "bridge_name": bridge["name"], "parity": bridge["bid"]}
                 self.render_card(self.containers["USDT_MEP"], f"{name} (U)", "Dolar MEP (M)", item_s, dest, {"ci": g_ci, "24h": g_24}, "USDT_MEP")
-                self.process_telegram("USDT_MEP", name, "MEP", costo, dest["bid"], g_ci)
+                self.process_telegram("USDT_MEP", name, "MEP", costo, dest["bid"], max(g_ci, g_24))
 
     def render_card(self, container, ex1, ex2, d1, d2, spread, cat, is_m=False):
         self.after(0, lambda: self._ui_render_card(container, ex1, ex2, d1, d2, spread, cat, is_m))
@@ -311,8 +317,8 @@ class ArbitrageBotGUI(ctk.CTk):
                     ctk.CTkLabel(b, image=img, text="").pack(pady=(10,0))
                 except: pass
                 ctk.CTkLabel(b, text=name, font=ctk.CTkFont(size=11, weight="bold")).pack()
-                p = p_data['bid'] if is_sell else p_data['ask']
-                ctk.CTkLabel(b, text=f"${p:,.2f}", font=ctk.CTkFont(size=16, weight="bold"), text_color=color).pack()
+                val_p = p_data['bid'] if is_sell else p_data['ask']
+                ctk.CTkLabel(b, text=f"${val_p:,.2f}", font=ctk.CTkFont(size=16, weight="bold"), text_color=color).pack()
                 if is_sell and "mep_24" in p_data: ctk.CTkLabel(b, text=f"CI: ${p_data['bid']:,.2f}\n24h: ${p_data['mep_24']:,.2f}", font=ctk.CTkFont(size=11, weight="bold"), text_color="#aaa").pack(pady=(5, 10))
                 elif not is_sell and "bridge_name" in p_data:
                     info = f"{'USDT' if '(U)' in name else 'Banco'}: ${p_data['raw_price']:,.2f}\nvia {p_data['bridge_name']} (x{p_data['parity']})"
