@@ -4,6 +4,7 @@ import time
 import threading
 import requests
 import json
+import ctypes
 from datetime import datetime
 from itertools import permutations
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -11,6 +12,12 @@ from dotenv import load_dotenv
 
 import customtkinter as ctk
 from PIL import Image
+
+try:
+    myappid = 'mycompany.myproduct.subproduct.version' 
+    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+except:
+    pass
 
 # --- Configuración de Rutas para PyInstaller ---
 def resource_path(relative_path):
@@ -39,10 +46,13 @@ class ArbitrageBotGUI(ctk.CTk):
         self.after(0, lambda: self.wm_state('zoomed'))
         self.title("Arbitrage Monitor Pro v1.0.2")
         
-        try:
-            self.iconbitmap(resource_path("app_icon.ico"))
-        except: pass
-
+        icon_path = resource_path("app_icon.ico")
+        if os.path.exists(icon_path):
+            try:
+                self.iconbitmap(icon_path)
+                self.after(200, lambda: self.wm_iconbitmap(icon_path))
+            except:
+                pass
         # Mapeos
         self.oficial_entities = {"uala": "Uala", "reba": "Reba", "plus": "Plus", "cocos": "Cocos", "fiwind": "Fiwind", "buenbit": "Buenbit"}
         self.cripto_exchanges = {"fiwind": "Fiwind", "buenbit": "Buenbit", "lemoncashp2p": "Lemon Cash P2P", "pluscrypto": "Plus Crypto", "satoshitango": "SatoshiTango", "lemoncash": "Lemon Cash", "belo": "belo", "bybit": "Bybit", "tiendacrypto": "TiendaCrypto", "binancep2p": "Binance P2P", "cocoscrypto": "Cocos Crypto", "bingxp2p": "BingX P2P", "decrypto": "Decrypto", "bybitp2p": "Bybit P2P", "eldoradop2p": "El Dorado P2P"}
@@ -56,7 +66,7 @@ class ArbitrageBotGUI(ctk.CTk):
     def get_initial_tasas(self):
         tasas = {"Ninguna (0%)": 0.0}
         try:
-            r1 = requests.get("https://rendimientos.co/api/config/", timeout=10).json()
+            r1 = requests.get("https://rendimientos.co/api/config", timeout=10).json()
             for item in r1.get("garantizados", []):
                 name = item.get("nombre", "")
                 clean = name.lower().replace("á", "a")
@@ -116,7 +126,7 @@ class ArbitrageBotGUI(ctk.CTk):
         p = ctk.CTkFrame(c, fg_color="transparent"); p.pack()
         for t, v in presets: ctk.CTkButton(p, text=t, width=42, height=22, font=ctk.CTkFont(size=10), fg_color="#333", command=lambda val=v, ent=e: (ent.delete(0, "end"), ent.insert(0, str(val)))).pack(side="left", padx=2)
         return e
-
+    
     def create_check(self, internal_id, name, target_dict):
         f = ctk.CTkFrame(self.ex_scroll, fg_color="transparent"); f.pack(fill="x", pady=1); var = ctk.BooleanVar(value=True); target_dict[internal_id] = var
         try:
