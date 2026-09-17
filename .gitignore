@@ -1,8 +1,0 @@
-.env
-__pycache__/
-build/
-dist/
-*.exe
-*.spec
-notas.txt
-*.log
