@@ -30,8 +30,7 @@ jobs:
         python -m PyInstaller --noconsole --onefile --add-data "logos;logos" --add-data "app_icon.ico;." --collect-all customtkinter --icon="app_icon.ico" arbitraje.py
 
     - name: Upload Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ArbitrajeBot-Windows
         path: dist/
-
