@@ -1,0 +1,81 @@
+2026-09-03 10:38:56,828 [ERROR] src.api_client - Invalid JSON fetching usdt for pluscrypto: Expecting value: line 1 column 1 (char 0)
+2026-09-03 10:39:25,871 [ERROR] src.api_client - Invalid JSON fetching usdt for pluscrypto: Expecting value: line 1 column 1 (char 0)
+2026-09-03 11:26:20,923 [ERROR] src.api_client - Invalid JSON fetching usdt for pluscrypto: Expecting value: line 1 column 1 (char 0)
+2026-09-03 11:26:50,240 [ERROR] src.api_client - Invalid JSON fetching usdt for pluscrypto: Expecting value: line 1 column 1 (char 0)
+2026-09-03 11:26:51,150 [ERROR] src.api_client - Error fetching parity for tiendacrypto: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/tiendacrypto/usdt/usd/0.1
+2026-09-03 11:26:51,151 [ERROR] src.api_client - Error fetching parity for decrypto: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/decrypto/usdt/usd/0.1
+2026-09-14 15:51:37,761 [ERROR] src.api_client - Invalid JSON fetching usdt for pluscrypto: Expecting value: line 1 column 1 (char 0)
+2026-09-14 15:51:39,978 [ERROR] src.api_client - Invalid JSON fetching btc for pluscrypto: Expecting value: line 1 column 1 (char 0)
+2026-09-14 15:51:40,045 [ERROR] src.api_client - Invalid JSON fetching btc for lemoncashp2p: Expecting value: line 1 column 1 (char 0)
+2026-09-14 15:51:40,056 [ERROR] src.api_client - Error fetching btc for binancep2p: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/binancep2p/btc/ars/0.1
+2026-09-14 15:51:40,070 [ERROR] src.api_client - Error fetching btc for cocoscrypto: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/cocoscrypto/btc/ars/0.1
+2026-09-14 15:51:40,073 [ERROR] src.api_client - Error fetching btc for bingxp2p: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/bingxp2p/btc/ars/0.1
+2026-09-14 15:51:40,074 [ERROR] src.api_client - Error fetching btc for decrypto: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/decrypto/btc/ars/0.1
+2026-09-14 15:51:40,082 [ERROR] src.api_client - Error fetching btc for bybitp2p: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/bybitp2p/btc/ars/0.1
+2026-09-14 15:51:40,088 [ERROR] src.api_client - Error fetching btc for nexo: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/nexo/btc/ars/0.1
+2026-09-14 15:51:40,091 [ERROR] src.api_client - Error fetching btc for eldoradop2p: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/eldoradop2p/btc/ars/0.1
+2026-09-14 15:51:41,359 [ERROR] src.api_client - Error fetching parity for decrypto: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/decrypto/usdt/usd/0.1
+2026-09-14 15:51:41,360 [ERROR] src.api_client - Error fetching parity for fiwind: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/fiwind/usdt/usd/0.1
+2026-09-14 15:51:41,360 [ERROR] src.api_client - Error fetching parity for tiendacrypto: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/tiendacrypto/usdt/usd/0.1
+2026-09-14 15:51:41,360 [ERROR] src.api_client - Error fetching parity for binancep2p: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/binancep2p/usdt/usd/0.1
+2026-09-14 15:51:41,360 [ERROR] src.api_client - Error fetching parity for satoshitango: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/satoshitango/usdt/usd/0.1
+2026-09-14 15:51:41,360 [ERROR] src.api_client - Error fetching parity for belo: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/belo/usdt/usd/0.1
+2026-09-14 15:51:41,396 [ERROR] src.api_client - Error fetching parity for nexo: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/nexo/usdt/usd/0.1
+2026-09-14 15:52:34,794 [ERROR] src.api_client - Invalid JSON fetching usdt for pluscrypto: Expecting value: line 1 column 1 (char 0)
+2026-09-14 15:52:37,016 [ERROR] src.api_client - Invalid JSON fetching btc for lemoncashp2p: Expecting value: line 1 column 1 (char 0)
+2026-09-14 15:52:37,021 [ERROR] src.api_client - Invalid JSON fetching btc for pluscrypto: Expecting value: line 1 column 1 (char 0)
+2026-09-14 15:52:37,054 [ERROR] src.api_client - Error fetching btc for bingxp2p: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/bingxp2p/btc/ars/0.1
+2026-09-14 15:52:37,055 [ERROR] src.api_client - Error fetching btc for tiendacrypto: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/tiendacrypto/btc/ars/0.1
+2026-09-14 15:52:37,058 [ERROR] src.api_client - Error fetching btc for cocoscrypto: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/cocoscrypto/btc/ars/0.1
+2026-09-14 15:52:37,058 [ERROR] src.api_client - Error fetching btc for decrypto: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/decrypto/btc/ars/0.1
+2026-09-14 15:52:37,060 [ERROR] src.api_client - Error fetching btc for bybitp2p: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/bybitp2p/btc/ars/0.1
+2026-09-14 15:52:37,062 [ERROR] src.api_client - Error fetching btc for eldoradop2p: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/eldoradop2p/btc/ars/0.1
+2026-09-14 15:52:37,062 [ERROR] src.api_client - Error fetching btc for nexo: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/nexo/btc/ars/0.1
+2026-09-14 15:52:37,068 [ERROR] src.api_client - Error fetching btc for binancep2p: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/binancep2p/btc/ars/0.1
+2026-09-14 15:52:37,896 [ERROR] src.api_client - Error fetching parity for belo: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/belo/usdt/usd/0.1
+2026-09-14 15:52:37,898 [ERROR] src.api_client - Error fetching parity for fiwind: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/fiwind/usdt/usd/0.1
+2026-09-14 15:52:37,902 [ERROR] src.api_client - Error fetching parity for satoshitango: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/satoshitango/usdt/usd/0.1
+2026-09-14 15:52:37,902 [ERROR] src.api_client - Error fetching parity for binancep2p: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/binancep2p/usdt/usd/0.1
+2026-09-14 15:52:37,902 [ERROR] src.api_client - Error fetching parity for tiendacrypto: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/tiendacrypto/usdt/usd/0.1
+2026-09-14 15:52:37,902 [ERROR] src.api_client - Error fetching parity for decrypto: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/decrypto/usdt/usd/0.1
+2026-09-14 15:52:37,925 [ERROR] src.api_client - Error fetching parity for nexo: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/nexo/usdt/usd/0.1
+2026-09-15 09:39:52,688 [ERROR] src.api_client - Error fetching fees: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/fees
+2026-09-15 09:39:52,725 [ERROR] src.api_client - Error fetching usdt: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/usdt/ars/0.1
+2026-09-15 09:39:52,726 [ERROR] src.api_client - Error fetching btc: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/btc/ars/0.1
+2026-09-15 09:39:52,733 [ERROR] src.api_client - Error fetching eth: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/eth/ars/0.1
+2026-09-15 09:39:52,733 [ERROR] src.api_client - Error fetching dai: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/dai/ars/0.1
+2026-09-15 09:39:52,734 [ERROR] src.api_client - Error fetching usdc: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/usdc/ars/0.1
+2026-09-15 09:39:53,235 [ERROR] src.api_client - Error fetching parities: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/usdt/usd/0.1
+2026-09-15 09:40:30,660 [ERROR] src.api_client - Error fetching usdc: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/usdc/ars/0.1
+2026-09-15 09:40:30,660 [ERROR] src.api_client - Error fetching dai: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/dai/ars/0.1
+2026-09-15 09:40:30,661 [ERROR] src.api_client - Error fetching btc: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/btc/ars/0.1
+2026-09-15 09:40:33,499 [ERROR] src.api_client - Error fetching usdt: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/usdt/ars/0.1
+2026-09-15 09:40:33,859 [ERROR] src.api_client - Error fetching mep: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/dolar
+2026-09-15 09:40:33,889 [ERROR] src.api_client - Error fetching fees: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/fees
+2026-09-15 09:40:33,927 [ERROR] src.api_client - Error fetching usdt: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/usdt/ars/0.1
+2026-09-15 09:40:33,930 [ERROR] src.api_client - Error fetching btc: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/btc/ars/0.1
+2026-09-15 09:40:33,932 [ERROR] src.api_client - Error fetching dai: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/dai/ars/0.1
+2026-09-15 09:40:33,932 [ERROR] src.api_client - Error fetching eth: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/eth/ars/0.1
+2026-09-15 09:40:33,933 [ERROR] src.api_client - Error fetching usdc: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/usdc/ars/0.1
+2026-09-15 09:40:34,386 [ERROR] src.api_client - Error fetching parities: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/usdt/usd/0.1
+2026-09-15 09:41:13,110 [ERROR] src.api_client - Error fetching usdt: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/usdt/ars/0.1
+2026-09-15 09:41:13,488 [ERROR] src.api_client - Error fetching mep: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/dolar
+2026-09-15 09:41:13,519 [ERROR] src.api_client - Error fetching fees: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/fees
+2026-09-15 09:41:13,553 [ERROR] src.api_client - Error fetching usdt: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/usdt/ars/0.1
+2026-09-15 09:41:13,557 [ERROR] src.api_client - Error fetching btc: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/btc/ars/0.1
+2026-09-15 09:41:13,558 [ERROR] src.api_client - Error fetching eth: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/eth/ars/0.1
+2026-09-15 09:41:13,561 [ERROR] src.api_client - Error fetching usdc: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/usdc/ars/0.1
+2026-09-15 09:41:13,585 [ERROR] src.api_client - Error fetching dai: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/dai/ars/0.1
+2026-09-15 09:41:14,044 [ERROR] src.api_client - Error fetching parities: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/usdt/usd/0.1
+2026-09-15 09:41:53,101 [ERROR] src.api_client - Error fetching usdt: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/usdt/ars/0.1
+2026-09-15 09:41:53,366 [ERROR] src.api_client - Error fetching mep: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/dolar
+2026-09-15 09:41:53,401 [ERROR] src.api_client - Error fetching fees: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/fees
+2026-09-15 09:41:53,439 [ERROR] src.api_client - Error fetching eth: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/eth/ars/0.1
+2026-09-15 09:41:53,447 [ERROR] src.api_client - Error fetching usdc: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/usdc/ars/0.1
+2026-09-15 09:41:53,451 [ERROR] src.api_client - Error fetching dai: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/dai/ars/0.1
+2026-09-15 09:41:55,971 [ERROR] src.api_client - Error fetching usdt: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/usdt/ars/0.1
+2026-09-15 09:41:56,234 [ERROR] src.api_client - Error fetching mep: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/dolar
+2026-09-15 09:41:56,266 [ERROR] src.api_client - Error fetching fees: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/fees
+2026-09-15 09:41:56,306 [ERROR] src.api_client - Error fetching btc: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/btc/ars/0.1
+2026-09-15 09:41:56,308 [ERROR] src.api_client - Error fetching usdc: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/usdc/ars/0.1
+2026-09-15 09:41:56,310 [ERROR] src.api_client - Error fetching usdt: 429 Client Error: Too Many Requests for url: https://criptoya.com/api/usdt/ars/0.1
