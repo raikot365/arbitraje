@@ -109,12 +109,13 @@ class ArbitrageAnalyzer:
                         ars_final = usdt_transferred * ars_bid
                         profit = (ars_final - capital_ars) / capital_ars * 100
                         
+                        total_steps = len(seq) + 2
                         card = {
                             "ex1": ex1, "ex2": ex2, 
                             "d1": {"ask": start_ask, "fee": start_fee, "coin": seq[0]}, 
                             "d2": {"bid": ars_bid}, 
                             "spread": profit, 
-                            "cat": f"TRIANGULAR ({len(seq)+1} SALTOS)", 
+                            "cat": f"TRIANGULAR ({total_steps} PASOS)", 
                             "is_m": False,
                             "extra": {"steps": binance_steps, "start_coin": seq[0]}
                         }
@@ -123,13 +124,38 @@ class ArbitrageAnalyzer:
                             cards.append(card)
                             
         if all_combinations:
-            best = max(all_combinations, key=lambda x: x["spread"])
-            best_market = best.copy()
-            best_market["is_m"] = True
-            cards.append(best_market)
+            # Add best market for each length (3, 4, 5 pasos) so multi-step options are visible
+            combos_len1 = [c for c in all_combinations if len(c["extra"]["steps"]) == 1]
+            if combos_len1:
+                b1 = max(combos_len1, key=lambda x: x["spread"]).copy()
+                b1["is_m"] = True
+                cards.append(b1)
+            combos_len2 = [c for c in all_combinations if len(c["extra"]["steps"]) == 2]
+            if combos_len2:
+                b2 = max(combos_len2, key=lambda x: x["spread"]).copy()
+                b2["is_m"] = True
+                cards.append(b2)
+            combos_len3 = [c for c in all_combinations if len(c["extra"]["steps"]) == 3]
+            if combos_len3:
+                b3 = max(combos_len3, key=lambda x: x["spread"]).copy()
+                b3["is_m"] = True
+                cards.append(b3)
+            if not combos_len1 and not combos_len2 and not combos_len3:
+                best = max(all_combinations, key=lambda x: x["spread"]).copy()
+                best["is_m"] = True
+                cards.append(best)
             
+        # Deduplicate while preserving order and prioritizing is_m
         cards.sort(key=lambda x: (x["is_m"], x["spread"]), reverse=True)
-        return cards[:15]
+        seen = set()
+        unique_cards = []
+        for c in cards:
+            key = (c["is_m"], c["ex1"], c["ex2"], tuple(s["pair"] for s in c["extra"]["steps"]))
+            if key not in seen:
+                seen.add(key)
+                unique_cards.append(c)
+
+        return unique_cards[:15]
 
     def analyze_oficial_mep(self, p_oficial, p_mep, threshold, y_diario):
         cards = []; alerts = []

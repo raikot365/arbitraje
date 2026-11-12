@@ -18,10 +18,12 @@ CRIPTO_EXCHANGES = {
     "pluscrypto": "Plus Crypto", "satoshitango": "SatoshiTango", "lemoncash": "Lemon Cash", 
     "belo": "belo", "bybit": "Bybit", "tiendacrypto": "TiendaCrypto", "binancep2p": "Binance P2P", 
     "cocoscrypto": "Cocos Crypto", "bingxp2p": "BingX P2P", "decrypto": "Decrypto", 
-    "bybitp2p": "Bybit P2P", "eldoradop2p": "El Dorado P2P", "nexo": "Nexo"
+    "bybitp2p": "Bybit P2P", "eldoradop2p": "El Dorado P2P", "nexo": "Nexo",
+    "letsbit": "LB Finanzas", "okexp2p": "OKX P2P", "ripio": "Ripio"
 }
 
 BRIDGE_LIST = {
     "belo": "belo", "binancep2p": "Binance P2P", "fiwind": "Fiwind", 
-    "satoshitango": "SatoshiTango", "tiendacrypto": "TiendaCrypto", "decrypto": "Decrypto", "nexo": "Nexo"
+    "satoshitango": "SatoshiTango", "tiendacrypto": "TiendaCrypto", "decrypto": "Decrypto", "nexo": "Nexo",
+    "letsbit": "LB Finanzas", "okexp2p": "OKX P2P", "ripio": "Ripio"
 }
