@@ -261,6 +261,10 @@ class ArbitrageBotGUI(ctk.CTk):
             h = ctk.CTkFrame(card, fg_color="transparent"); h.pack(fill="x", padx=15, pady=8)
             bh = ctk.CTkFrame(h, fg_color="#2b2b2b" if is_m else "#1e8449", corner_radius=6); bh.pack(side="left")
             ctk.CTkLabel(bh, text="MERCADO" if is_m else "OPORTUNIDAD", font=ctk.CTkFont(weight="bold", size=13)).pack(padx=10, pady=2)
+            if cat.startswith("TRIANGULAR"):
+                cat_badge = ctk.CTkFrame(h, fg_color="#222", corner_radius=6, border_width=1, border_color="#3BD0C9")
+                cat_badge.pack(side="left", padx=10)
+                ctk.CTkLabel(cat_badge, text=cat, font=ctk.CTkFont(size=11, weight="bold"), text_color="#3BD0C9").pack(padx=8, pady=2)
             ctk.CTkLabel(h, text=datetime.now().strftime("%H:%M:%S"), font=ctk.CTkFont(size=11), text_color="#666").pack(side="right")
             body = ctk.CTkFrame(card, fg_color="transparent"); body.pack(fill="x", padx=10, pady=10)
             if cat.startswith("TRIANGULAR"):
@@ -268,12 +272,16 @@ class ArbitrageBotGUI(ctk.CTk):
             else:
                 body.grid_columnconfigure((0,1,2), weight=1, uniform="group")
             
-            def box_ui(parent, name, p_data, txt, color, is_sell, col):
+            def box_ui(parent, name, p_data, txt, color, is_sell, col, step_title=None):
                 b = ctk.CTkFrame(parent, fg_color="#222", corner_radius=10, border_width=1, border_color="#444"); b.grid(row=0, column=col, sticky="nsew", padx=5)
+                if step_title:
+                    f_st = ctk.CTkFrame(b, fg_color=color, corner_radius=4)
+                    f_st.pack(pady=(6, 2), padx=10)
+                    ctk.CTkLabel(f_st, text=step_title, font=ctk.CTkFont(size=10, weight="bold"), text_color="#fff" if color != "#f3ba2f" else "#000").pack(padx=8, pady=1)
                 try:
                     clean = name.split(' (')[0].replace('á', 'a')
                     img = ctk.CTkImage(Image.open(resource_path(f"logos/{clean}.png")), size=(34, 34))
-                    ctk.CTkLabel(b, image=img, text="").pack(pady=(10,0))
+                    ctk.CTkLabel(b, image=img, text="").pack(pady=(4 if step_title else 10,0))
                 except: pass
                 ctk.CTkLabel(b, text=name, font=ctk.CTkFont(size=11, weight="bold")).pack()
                 val_p = p_data['bid'] if is_sell else p_data['ask']
@@ -284,43 +292,68 @@ class ArbitrageBotGUI(ctk.CTk):
                     ctk.CTkLabel(b, text=info, font=ctk.CTkFont(size=11), text_color="#aaa").pack(pady=(5, 10))
                 else: 
                     fee_txt = f"\n(Fee: {p_data.get('fee', 0):.4f})" if "fee" in p_data else ""
-                    ctk.CTkLabel(b, text=txt + fee_txt, font=ctk.CTkFont(size=10), text_color="#555").pack(pady=(2, 8))
+                    ctk.CTkLabel(b, text=txt + fee_txt, font=ctk.CTkFont(size=10), text_color="#aaa" if step_title else "#555").pack(pady=(2, 8))
                 
-            start_coin_txt = f"COMPRA {d1.get('coin', '')}".strip()
-            box_ui(body, ex1, d1, start_coin_txt, "#28a745", False, 0)
-            
             if cat.startswith("TRIANGULAR") and "extra" in c_data:
                 extra = c_data["extra"]
-                mid = ctk.CTkFrame(body, fg_color="transparent")
+                steps = extra.get("steps", [])
+                total_steps = len(steps) + 2
+                
+                # Paso 1: Compra inicial en exchange local con ARS
+                start_coin_txt = f"COMPRA {d1.get('coin', '')} (con ARS)"
+                box_ui(body, ex1, d1, start_coin_txt, "#28a745", False, 0, step_title="PASO 1")
+                
+                # Paso(s) en Binance Spot
+                mid = ctk.CTkFrame(body, fg_color="#222", corner_radius=10, border_width=1, border_color="#444")
                 mid.grid(row=0, column=1, padx=5, sticky="nsew")
                 
-                # We can have up to 3 Binance steps. Pack them in nice boxes.
-                step_idx = 1
-                for step in extra["steps"]:
+                if len(steps) == 1:
+                    step = steps[0]
                     operacion = "Vender" if step["action"] == "Bid" else "Comprar"
                     precio = step['rate']
+                    p_str = f"{precio:,.6f}" if precio < 10 else f"{precio:,.2f}"
                     
-                    # Create a small frame for each step
-                    f_step = ctk.CTkFrame(mid, fg_color="#2a2a2a", corner_radius=6)
-                    f_step.pack(fill="x", pady=2, padx=5)
+                    f_st = ctk.CTkFrame(mid, fg_color="#f3ba2f", corner_radius=4)
+                    f_st.pack(pady=(6, 2), padx=10)
+                    ctk.CTkLabel(f_st, text="PASO 2", font=ctk.CTkFont(size=10, weight="bold"), text_color="#000").pack(padx=8, pady=1)
                     
-                    title = f"Paso {step_idx}: {step['from']} ➔ {step['to']}"
+                    try:
+                        img = ctk.CTkImage(Image.open(resource_path("logos/Binance P2P.png")), size=(34, 34))
+                        ctk.CTkLabel(mid, image=img, text="").pack(pady=(4, 0))
+                    except: pass
                     
-                    if precio < 10:
-                        sub = f"{operacion} en Binance a {precio:,.6f}"
-                    else:
-                        sub = f"{operacion} en Binance a {precio:,.2f}"
+                    ctk.CTkLabel(mid, text="Binance Spot", font=ctk.CTkFont(size=11, weight="bold")).pack()
+                    ctk.CTkLabel(mid, text=f"${p_str}", font=ctk.CTkFont(size=16, weight="bold"), text_color="#f3ba2f").pack()
+                    info_sub = f"{operacion} {step['from']} ➔ {step['to']}"
+                    ctk.CTkLabel(mid, text=info_sub, font=ctk.CTkFont(size=10), text_color="#aaa").pack(pady=(2, 8))
+                else:
+                    f_st = ctk.CTkFrame(mid, fg_color="#f3ba2f", corner_radius=4)
+                    f_st.pack(pady=(6, 4), padx=10)
+                    ctk.CTkLabel(f_st, text="BINANCE SPOT", font=ctk.CTkFont(size=10, weight="bold"), text_color="#000").pack(padx=8, pady=1)
                     
-                    ctk.CTkLabel(f_step, text=title, font=ctk.CTkFont(size=12, weight="bold"), text_color="#ddd").pack(pady=(3, 0))
-                    ctk.CTkLabel(f_step, text=sub, font=ctk.CTkFont(size=10), text_color="#aaa").pack(pady=(0, 3))
-                    step_idx += 1
-                    
-                box_ui(body, ex2, d2, "VENTA USDT", "#e74c3c", True, 2)
+                    for idx, step in enumerate(steps):
+                        step_num = idx + 2
+                        operacion = "Vender" if step["action"] == "Bid" else "Comprar"
+                        precio = step['rate']
+                        p_str = f"{precio:,.6f}" if precio < 10 else f"{precio:,.2f}"
+                        
+                        f_step = ctk.CTkFrame(mid, fg_color="#2a2a2a", corner_radius=6)
+                        f_step.pack(fill="x", pady=2, padx=6)
+                        title = f"Paso {step_num}: {step['from']} ➔ {step['to']}"
+                        sub = f"{operacion} a ${p_str}"
+                        ctk.CTkLabel(f_step, text=title, font=ctk.CTkFont(size=10, weight="bold"), text_color="#f3ba2f").pack(pady=(2, 0))
+                        ctk.CTkLabel(f_step, text=sub, font=ctk.CTkFont(size=10), text_color="#ddd").pack(pady=(0, 2))
+                
+                # Paso Final: Venta de USDT por ARS en exchange local
+                final_step_title = f"PASO {total_steps}"
+                box_ui(body, ex2, d2, "VENTA USDT (por ARS)", "#e74c3c", True, 2, step_title=final_step_title)
+                
                 s_box = ctk.CTkFrame(body, fg_color="transparent"); s_box.grid(row=0, column=3, padx=10, sticky="nsew")
                 one_box = ctk.CTkFrame(s_box, fg_color="#3b8ed0", corner_radius=15); one_box.pack(fill="both", expand=True)
                 ctk.CTkLabel(one_box, text="PROFIT TOTAL", font=ctk.CTkFont(size=11, weight="bold"), text_color="black").pack(expand=True, pady=(15,0))
                 ctk.CTkLabel(one_box, text=f"{spread:.2f}%", font=ctk.CTkFont(size=28, weight="bold"), text_color="black").pack(expand=True, pady=(0,20))
             else:
+                box_ui(body, ex1, d1, "COMPRA", "#28a745", False, 0)
                 box_ui(body, ex2, d2, "VENTA", "#e74c3c", True, 2)
                 s_box = ctk.CTkFrame(body, fg_color="transparent"); s_box.grid(row=0, column=1, padx=10, sticky="nsew")
                 if isinstance(spread, dict):

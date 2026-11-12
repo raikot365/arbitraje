@@ -48,6 +48,9 @@ class APIClient:
                         fees[ex][coin] = min_fee
                     except:
                         pass
+            for eid, name in CRIPTO_EXCHANGES.items():
+                if eid in fees:
+                    fees[name.lower()] = fees[eid]
             return fees
         except ValueError as e:
             logger.error(f"Invalid JSON fetching fees: {e}")
