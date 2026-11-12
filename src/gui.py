@@ -3,9 +3,9 @@ import time
 import threading
 from datetime import datetime
 import customtkinter as ctk
-from PIL import Image
+from PIL import Image, ImageTk
 
-from src.config import resource_path, OFICIAL_ENTITIES, CRIPTO_EXCHANGES, BRIDGE_LIST
+from src.config import resource_path, get_logo_path, OFICIAL_ENTITIES, CRIPTO_EXCHANGES, BRIDGE_LIST
 from src.api_client import APIClient
 from src.analyzer import ArbitrageAnalyzer
 from src.notifier import TelegramNotifier
@@ -20,6 +20,7 @@ class ArbitrageBotGUI(ctk.CTk):
         
         self.is_running = False
         self.proxima_actualizacion = 0
+        self._image_cache = {}
         
         self.tasas_disponibles = self.api_client.get_initial_tasas()
 
@@ -29,9 +30,22 @@ class ArbitrageBotGUI(ctk.CTk):
         icon_path = resource_path("app_icon.ico")
         if os.path.exists(icon_path):
             try:
+                self.iconbitmap(default=icon_path)
+            except Exception:
+                pass
+            try:
                 self.iconbitmap(icon_path)
+            except Exception:
+                pass
+            try:
+                icon_img = Image.open(icon_path)
+                self._app_icon_photo = ImageTk.PhotoImage(icon_img)
+                self.wm_iconphoto(True, self._app_icon_photo)
+            except Exception:
+                pass
+            try:
                 self.after(200, lambda: self.wm_iconbitmap(icon_path))
-            except:
+            except Exception:
                 pass
 
         self.grid_columnconfigure(1, weight=1)
@@ -39,9 +53,39 @@ class ArbitrageBotGUI(ctk.CTk):
         self.setup_sidebar()
         self.setup_main_area()
 
+    def get_image(self, name, size):
+        key = (name, size)
+        if key in self._image_cache:
+            return self._image_cache[key]
+        
+        logo_path = get_logo_path(name)
+        if logo_path and os.path.exists(logo_path):
+            try:
+                pil_img = Image.open(logo_path)
+                ctk_img = ctk.CTkImage(pil_img, size=size)
+                self._image_cache[key] = ctk_img
+                return ctk_img
+            except Exception:
+                pass
+        return None
+
     def setup_sidebar(self):
         self.sidebar = ctk.CTkFrame(self, width=320, corner_radius=0); self.sidebar.grid(row=0, column=0, sticky="nsew")
-        ctk.CTkLabel(self.sidebar, text="CONFIGURACIÓN", font=ctk.CTkFont(size=18, weight="bold")).pack(pady=15)
+        
+        # Header con logo de la aplicación y título
+        header_frame = ctk.CTkFrame(self.sidebar, fg_color="transparent")
+        header_frame.pack(pady=15)
+        
+        icon_path = resource_path("app_icon.ico")
+        if os.path.exists(icon_path):
+            try:
+                app_img = ctk.CTkImage(Image.open(icon_path), size=(26, 26))
+                self._app_logo_img = app_img
+                ctk.CTkLabel(header_frame, image=app_img, text="").pack(side="left", padx=(0, 8))
+            except Exception:
+                pass
+        
+        ctk.CTkLabel(header_frame, text="CONFIGURACIÓN", font=ctk.CTkFont(size=18, weight="bold")).pack(side="left")
         self.threshold_entry = self.create_input_with_presets("Umbral de Alerta (%)", "1.0", [("1%", 1.0), ("2%", 2.0), ("3%", 3.0), ("5%", 5.0)])
         self.interval_entry = self.create_input_with_presets("Intervalo Consulta (seg)", "30", [("30s", 30), ("1m", 60), ("5m", 300), ("10m", 600)])
         self.cooldown_entry = self.create_input_with_presets("Cooldown Alertas (seg)", "300", [("5m", 300), ("10m", 600), ("15m", 900), ("30m", 1800)])
@@ -129,10 +173,9 @@ class ArbitrageBotGUI(ctk.CTk):
     
     def create_check(self, internal_id, name, target_dict):
         f = ctk.CTkFrame(self.ex_scroll, fg_color="transparent"); f.pack(fill="x", pady=1); var = ctk.BooleanVar(value=True); target_dict[internal_id] = var
-        try:
-            img = ctk.CTkImage(Image.open(resource_path(f"logos/{name}.png")), size=(20, 20))
+        img = self.get_image(name, (20, 20))
+        if img:
             ctk.CTkLabel(f, image=img, text="").pack(side="left", padx=5)
-        except: pass
         ctk.CTkCheckBox(f, text=name, variable=var, font=ctk.CTkFont(size=11)).pack(side="left")
 
     def setup_main_area(self):
@@ -278,11 +321,11 @@ class ArbitrageBotGUI(ctk.CTk):
                     f_st = ctk.CTkFrame(b, fg_color=color, corner_radius=4)
                     f_st.pack(pady=(6, 2), padx=10)
                     ctk.CTkLabel(f_st, text=step_title, font=ctk.CTkFont(size=10, weight="bold"), text_color="#fff" if color != "#f3ba2f" else "#000").pack(padx=8, pady=1)
-                try:
-                    clean = name.split(' (')[0].replace('á', 'a')
-                    img = ctk.CTkImage(Image.open(resource_path(f"logos/{clean}.png")), size=(34, 34))
-                    ctk.CTkLabel(b, image=img, text="").pack(pady=(4 if step_title else 10,0))
-                except: pass
+                
+                img = self.get_image(name, (34, 34))
+                if img:
+                    ctk.CTkLabel(b, image=img, text="").pack(pady=(4 if step_title else 10, 0))
+
                 ctk.CTkLabel(b, text=name, font=ctk.CTkFont(size=11, weight="bold")).pack()
                 val_p = p_data['bid'] if is_sell else p_data['ask']
                 ctk.CTkLabel(b, text=f"${val_p:,.2f}", font=ctk.CTkFont(size=16, weight="bold"), text_color=color).pack()
@@ -317,10 +360,9 @@ class ArbitrageBotGUI(ctk.CTk):
                     f_st.pack(pady=(6, 2), padx=10)
                     ctk.CTkLabel(f_st, text="PASO 2", font=ctk.CTkFont(size=10, weight="bold"), text_color="#000").pack(padx=8, pady=1)
                     
-                    try:
-                        img = ctk.CTkImage(Image.open(resource_path("logos/Binance P2P.png")), size=(34, 34))
+                    img = self.get_image("Binance Spot", (34, 34))
+                    if img:
                         ctk.CTkLabel(mid, image=img, text="").pack(pady=(4, 0))
-                    except: pass
                     
                     ctk.CTkLabel(mid, text="Binance Spot", font=ctk.CTkFont(size=11, weight="bold")).pack()
                     ctk.CTkLabel(mid, text=f"${p_str}", font=ctk.CTkFont(size=16, weight="bold"), text_color="#f3ba2f").pack()

@@ -1,13 +1,19 @@
 import sys
+import os
 import ctypes
 import logging
 import customtkinter as ctk
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
+
+log_file = os.path.join(BASE_DIR, "arbitraje.log")
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(name)s - %(message)s",
     handlers=[
-        logging.FileHandler("arbitraje.log", encoding="utf-8"),
+        logging.FileHandler(log_file, encoding="utf-8"),
         logging.StreamHandler(sys.stdout)
     ]
 )

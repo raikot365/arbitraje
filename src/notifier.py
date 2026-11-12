@@ -14,7 +14,12 @@ class TelegramNotifier:
         self.reload_config()
 
     def reload_config(self):
-        load_dotenv()
+        from src.settings import BASE_DIR
+        env_path = os.path.join(BASE_DIR, ".env")
+        if os.path.exists(env_path):
+            load_dotenv(dotenv_path=env_path)
+        else:
+            load_dotenv()
         settings = load_settings()
         self.telegram_token = settings.get("telegram_token") or os.getenv("TELEGRAM_TOKEN")
         self.chat_id = settings.get("chat_id") or os.getenv("CHAT_ID")

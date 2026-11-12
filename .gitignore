@@ -6,3 +6,4 @@ dist/
 *.spec
 notas.txt
 *.log 
+.vscode/
